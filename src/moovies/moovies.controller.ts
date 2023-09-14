@@ -7,8 +7,6 @@ import {
   Patch,
   Post,
   Query,
-  Req,
-  UseInterceptors,
 } from '@nestjs/common';
 import { MooviesService } from './moovies.service';
 import { ApiTags } from '@nestjs/swagger';

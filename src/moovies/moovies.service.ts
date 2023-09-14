@@ -8,8 +8,8 @@ import {
   DeleteMoovieResponseDTO,
   UpdateMoovieRequestDTO,
 } from './dtos/moovies.dto';
-import { Genre } from './genre.schema';
-import { GenreService } from './genre.service';
+import { Genre } from '../genre/genre.schema';
+import { GenreService } from '../genre/genre.service';
 @Injectable()
 export class MooviesService {
   constructor(
@@ -77,6 +77,7 @@ export class MooviesService {
     return {
       moovieId: moovieId,
       deleted: true,
+      schema: Genre.name,
     };
   }
 }

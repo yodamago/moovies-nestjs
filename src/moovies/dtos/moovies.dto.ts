@@ -64,7 +64,7 @@ export class UpdateMoovieRequestDTO {
 
   @ApiProperty({
     description: 'Genres of moovie',
-    example: ['Comedy', 'Action'],
+    example: ['comedy', 'action'],
   })
   @IsDefined()
   @IsArray()
@@ -74,4 +74,5 @@ export class UpdateMoovieRequestDTO {
 export class DeleteMoovieResponseDTO {
   moovieId: string;
   deleted: boolean;
+  schema: string;
 }

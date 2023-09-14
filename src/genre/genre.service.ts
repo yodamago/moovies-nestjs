@@ -2,10 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { GenreRepository } from './genre.repository';
 import { Genre } from './genre.schema';
 import { difference } from 'ramda';
+import {
+  DeleteGenreRequestDTO,
+  DeleteGenreResponseDTO,
+} from './dtos/genre.dto';
+import { MooviesRepository } from 'src/moovies/moovies.repository';
 
 @Injectable()
 export class GenreService {
-  constructor(private readonly genreRepository: GenreRepository) {}
+  constructor(
+    private readonly genreRepository: GenreRepository,
+    private readonly moovieRepository: MooviesRepository,
+    ) {}
 
   async addGenre({ name }: { name: string }): Promise<Genre> {
     const { genreRepository } = this;
@@ -34,5 +42,23 @@ export class GenreService {
     const lowerCasedGenres = genres.map((e) => e.toLowerCase());
     const uniqueGenres = [...new Set(lowerCasedGenres)];
     return uniqueGenres;
+  }
+
+  async listGenres(): Promise<Genre[]> {
+    const { genreRepository } = this;
+    return await genreRepository.listGenres();
+  }
+  async delete({
+    deleteGenreRequestDTO,
+  }: {
+    deleteGenreRequestDTO: DeleteGenreRequestDTO;
+  }): Promise<DeleteGenreResponseDTO> {
+    const { genreRepository } = this;
+    await genreRepository.delete(deleteGenreRequestDTO.name);
+    return {
+      name: deleteGenreRequestDTO.name,
+      schema: Genre.name,
+      deleted: true,
+    };
   }
 }

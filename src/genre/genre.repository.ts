@@ -23,4 +23,14 @@ export class GenreRepository {
       .lean()
       .exec();
   }
+
+  async listGenres(): Promise<Genre[]> {
+    const { GenreModel } = this;
+    return GenreModel.find({}).lean().exec();
+  }
+
+  async delete(name: string): Promise<void> {
+    const { GenreModel } = this;
+    await GenreModel.findOneAndRemove({ name }).lean().exec();
+  }
 }
