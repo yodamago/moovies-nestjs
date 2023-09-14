@@ -15,6 +15,7 @@ import { PaginationDTO } from './dtos/pagination.dto';
 import {
   AddMoovieRequestDTO,
   DeleteMoovieResponseDTO,
+  SearchMoovieRequestDTO,
 } from './dtos/moovies.dto';
 import { Mapper } from '@automapper/core';
 import { FilterMoovies } from './types';
@@ -66,6 +67,20 @@ export class MooviesController {
 
     const moovies = await mooviesService.delete({
       moovieId,
+    });
+    return moovies;
+  }
+
+  @Post('search')
+  async searchMoovies(
+    @Body() searchMoovieRequestDTO: SearchMoovieRequestDTO,
+    @Query() paginationDTO?: PaginationDTO,
+  ): Promise<FilterMoovies> {
+    const { mooviesService } = this;
+
+    const moovies = await mooviesService.searchMoovies({
+      paginationDTO,
+      searchMoovieRequestDTO,
     });
     return moovies;
   }

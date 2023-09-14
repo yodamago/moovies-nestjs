@@ -20,7 +20,7 @@ export class GenreService {
 
     const isExist = await genreRepository.getGenreByName(name);
     if (isExist) return isExist;
-    await genreRepository.addGenre(name);
+    await genreRepository.addGenre(this.genrePipeline(name));
   }
 
   async addBulkGenres(genres: string[]): Promise<string[]> {
@@ -32,14 +32,18 @@ export class GenreService {
     const promises = [];
     const newGenres = difference(validGenres, existGenreList);
     newGenres.forEach((genre) => {
-      promises.push(genreRepository.addGenre(genre));
+      promises.push(genreRepository.addGenre(this.genrePipeline(genre)));
     });
     await Promise.all(promises);
     return validGenres;
   }
 
+  genrePipeline(name: string): string {
+    return name.toLowerCase();
+  }
+
   genreListValidator(genres: string[]): string[] {
-    const lowerCasedGenres = genres.map((e) => e.toLowerCase());
+    const lowerCasedGenres = genres.map((genre) => this.genrePipeline(genre));
     const uniqueGenres = [...new Set(lowerCasedGenres)];
     return uniqueGenres;
   }
@@ -53,10 +57,12 @@ export class GenreService {
   }: {
     deleteGenreRequestDTO: DeleteGenreRequestDTO;
   }): Promise<DeleteGenreResponseDTO> {
-    const { genreRepository } = this;
-    await genreRepository.delete(deleteGenreRequestDTO.name);
+    const { genreRepository, moovieRepository } = this;
+    const genre = this.genrePipeline(deleteGenreRequestDTO.name);
+    await genreRepository.delete(genre);
+    await moovieRepository.deleteGenreOfMoovies(genre);
     return {
-      name: deleteGenreRequestDTO.name,
+      name: genre,
       schema: Genre.name,
       deleted: true,
     };

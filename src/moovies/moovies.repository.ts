@@ -23,8 +23,8 @@ export class MooviesRepository {
       {
         $facet: {
           data: [
-            { $skip: Number(pagination.offset) },
-            { $limit: Number(pagination.limit) },
+            { $skip: Number(pagination.offset) || 0 },
+            { $limit: Number(pagination.limit) || 20 },
           ],
           count: [{ $count: 'count' }],
         },
@@ -82,5 +82,56 @@ export class MooviesRepository {
   async deleteMoovie(moovieId: string): Promise<void> {
     const { MooviesModel } = this;
     await MooviesModel.findByIdAndRemove(moovieId);
+  }
+
+  async deleteGenreOfMoovies(genre: string) {
+    const { MooviesModel } = this;
+    await MooviesModel.updateMany({
+      $pull: { genre },
+    });
+  }
+
+  async searchMoovies(
+    pagination: PaginationDTO,
+    title: string,
+    genre: string[],
+  ) {
+    const { MooviesModel } = this;
+
+    const pipeline: PipelineStage[] = [
+      {
+        $match: {
+          ...(title
+            ? { title: { $regex: new RegExp(title, 'i') } }
+            : undefined),
+          ...(genre ? { genre: { $in: genre } } : undefined),
+        },
+      },
+      {
+        $facet: {
+          data: [
+            { $skip: Number(pagination.offset) || 0 },
+            { $limit: Number(pagination.limit) || 20 },
+          ],
+          count: [{ $count: 'count' }],
+        },
+      },
+      {
+        $project: {
+          data: 1,
+          count: {
+            $arrayElemAt: ['$count.count', 0],
+          },
+        },
+      },
+    ];
+
+    const [result]: FilterMoovies[] =
+      await MooviesModel.aggregate<FilterMoovies>(pipeline).exec();
+
+    return {
+      data: result.data,
+      count: result.count || 0,
+    };
   }
 }

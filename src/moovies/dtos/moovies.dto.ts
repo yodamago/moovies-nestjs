@@ -33,7 +33,7 @@ export class AddMoovieRequestDTO {
 
   @ApiProperty({
     description: 'Genres of moovie',
-    example: ['Comedy', 'Action'],
+    example: ['comedy', 'action'],
   })
   @IsDefined()
   @IsArray()
@@ -67,6 +67,21 @@ export class UpdateMoovieRequestDTO {
     example: ['comedy', 'action'],
   })
   @IsDefined()
+  @IsArray()
+  genre: string[];
+}
+
+export class SearchMoovieRequestDTO {
+  @ApiProperty({
+    description: 'Title of the moovie',
+  })
+  @IsString()
+  title: string;
+
+  @ApiProperty({
+    description: 'Genre of the moovie',
+    example: ['history'],
+  })
   @IsArray()
   genre: string[];
 }

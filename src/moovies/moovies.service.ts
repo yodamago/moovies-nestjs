@@ -6,6 +6,7 @@ import { FilterMoovies } from './types';
 import {
   AddMoovieRequestDTO,
   DeleteMoovieResponseDTO,
+  SearchMoovieRequestDTO,
   UpdateMoovieRequestDTO,
 } from './dtos/moovies.dto';
 import { Genre } from '../genre/genre.schema';
@@ -79,5 +80,26 @@ export class MooviesService {
       deleted: true,
       schema: Genre.name,
     };
+  }
+
+  async deleteGenreOfMoovies({ genre }: { genre: string }): Promise<void> {
+    const { mooviesRepository } = this;
+
+    await mooviesRepository.deleteGenreOfMoovies(genre);
+  }
+
+  async searchMoovies({
+    paginationDTO,
+    searchMoovieRequestDTO,
+  }: {
+    paginationDTO: PaginationDTO;
+    searchMoovieRequestDTO: SearchMoovieRequestDTO;
+  }): Promise<FilterMoovies> {
+    const { mooviesRepository } = this;
+    return await mooviesRepository.searchMoovies(
+      paginationDTO,
+      searchMoovieRequestDTO.title,
+      searchMoovieRequestDTO.genre,
+    );
   }
 }
