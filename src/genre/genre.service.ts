@@ -6,14 +6,14 @@ import {
   DeleteGenreRequestDTO,
   DeleteGenreResponseDTO,
 } from './dtos/genre.dto';
-import { MooviesRepository } from 'src/moovies/moovies.repository';
+import { MooviesRepository } from '../moovies/moovies.repository';
 
 @Injectable()
 export class GenreService {
   constructor(
     private readonly genreRepository: GenreRepository,
     private readonly moovieRepository: MooviesRepository,
-    ) {}
+  ) {}
 
   async addGenre({ name }: { name: string }): Promise<Genre> {
     const { genreRepository } = this;

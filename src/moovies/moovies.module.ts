@@ -12,6 +12,6 @@ import { GenreModule } from 'src/genre/genre.module';
   ],
   controllers: [MooviesController],
   providers: [MooviesService, MooviesRepository],
-  exports: [MooviesRepository],
+  exports: [MooviesRepository, MooviesService],
 })
 export class MooviesModule {}
