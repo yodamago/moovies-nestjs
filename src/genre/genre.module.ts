@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 
 import { Genre, GenreSchema } from './genre.schema';
 import { GenreService } from './genre.service';
@@ -9,6 +9,7 @@ import { MooviesRepository } from 'src/moovies/moovies.repository';
 import { MooviesService } from 'src/moovies/moovies.service';
 import { MooviesModule } from 'src/moovies/moovies.module';
 import { Moovies, MooviesSchema } from 'src/moovies/moovies.schemas';
+import { RequestLoggerMiddleware } from 'src/request-logger/request-logger.middleware';
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Genre.name, schema: GenreSchema }]),
@@ -18,4 +19,8 @@ import { Moovies, MooviesSchema } from 'src/moovies/moovies.schemas';
   providers: [GenreService, GenreRepository, MooviesRepository, MooviesService],
   exports: [GenreService, GenreRepository],
 })
-export class GenreModule {}
+export class GenreModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(RequestLoggerMiddleware).forRoutes('*');
+  }
+}
