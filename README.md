@@ -10,7 +10,10 @@ http://localhost:3000/documentation
 ## Installation
 
 ```bash
-$ npm install
+$  docker-compose build 
+$  docker-compose up -d
+$  npm install
+$  npm run start:dev
 ```
 
 ## Running the app
