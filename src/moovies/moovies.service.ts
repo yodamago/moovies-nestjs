@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { MooviesRepository } from './moovies.repository';
 import { Moovies } from './moovies.schemas';
 import { PaginationDTO } from './dtos/pagination.dto';
@@ -55,6 +55,11 @@ export class MooviesService {
   }): Promise<Moovies> {
     const { mooviesRepository, genreService } = this;
 
+    const getMoovie = await mooviesRepository.getMoovieById(moovieId);
+    if (!getMoovie) {
+      throw new HttpException('Moovie not found', HttpStatus.NOT_FOUND);
+    }
+
     const { genre, ...rest } = updateMoovieRequestDTO;
     const genres = await genreService.addBulkGenres(genre);
 
@@ -73,6 +78,10 @@ export class MooviesService {
     moovieId: string;
   }): Promise<DeleteMoovieResponseDTO> {
     const { mooviesRepository } = this;
+    const getMoovie = await mooviesRepository.getMoovieById(moovieId);
+    if (!getMoovie) {
+      throw new HttpException('Moovie not found', HttpStatus.NOT_FOUND);
+    }
 
     await mooviesRepository.deleteMoovie(moovieId);
     return {
