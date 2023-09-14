@@ -10,7 +10,10 @@ http://localhost:3000/documentation
 ## Installation
 
 ```bash
-$ npm install
+$  docker-compose build 
+$  docker-compose up -d
+$  npm install
+$  npm run start:dev
 ```
 
 ## Running the app
@@ -29,11 +32,17 @@ $ npm run start:prod
 
 
 While implementing, I thought of having 2 modules: genre and movies.
+
 Genre has its own independent collection. However, when a movie is added, the entered genres also go through filters, and only non-existent genres are added to the genre database simultaneously.
 When a genre is deleted, it is also removed from movies at the same time.
+
 Another point I didn't consider when designing the system was time constraints, but it would have been better if it were like this.
+
 When adding a movie, each genre could have been searched in the genre database, the IDs of existing genres obtained, and the non-existent ones added as ObjectId in the movies.genre array.
 
+Added Exception for case of not found of genre from mongo id
+Added class-validator for validating payload of dto
+Added Middleware for request logging.
 
 ## Endpoints
 
